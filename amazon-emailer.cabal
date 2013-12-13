@@ -27,7 +27,6 @@ executable amazon-emailer
         bytestring >= 0.9.1 && < 0.11,
         postgresql-simple == 0.3.*,
         http-conduit == 2.*,
-        mime-mail,
-        mime-mail-ses,
-        time >= 1.1 && < 1.5,
-        directory == 1.*
+        mime-mail == 0.4.*,
+        mime-mail-ses == 0.2.*,
+        time >= 1.1 && < 1.5

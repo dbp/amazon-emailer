@@ -6,8 +6,6 @@ import Control.Monad.Trans.Resource (runResourceT)
 import Control.Concurrent (threadDelay)
 import Control.Exception (bracket)
 import qualified Control.Exception.Lifted as EX
-import System.IO (hPutStr, stderr)
-import System.Directory (doesFileExist, removeFile)
 import Data.Text (Text)
 import qualified Data.Text.Lazy as LT
 import qualified Data.Text.Lazy.Encoding as LT
