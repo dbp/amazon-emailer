@@ -5,9 +5,9 @@ emails out of a database table, and tries to send a specified number
 every second (well, it delays a second between each sending, so it is
 upper bounded by the specified number per second, but probably will be
 less, accounting for latency, request time, etc). It records when a
-message was sent. Right now, only one process can operate (and it
-creates a lock file, /tmp/amazon_emailer.lock to prevent other
-processes from starting - see Todo for way to fix this).
+message was sent. It uses the database to lock messages, so many workers
+can work simultaneously (but they will all try to send out the configured
+number of messages per second).
 
 If messages fail to send for any reason (this could be connectivity,
 blacklisted addresses, etc, but NOT bounced messages, as those are
@@ -74,10 +74,3 @@ Then you should create a Config.hs file, that looks like:
 
 Finally, in your application, just insert messages into the
 amazon_email_queue table, and then should get picked up and sent out.
-
-
-# Todo
-
-It would be better to eliminate the file locking, and simply grab/mark grabbed the
-emails in a single database query, so that many emailers could be working on the database
-at once without the possibility of duplicate messages. This is an easy change.
