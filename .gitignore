@@ -1,0 +1,5 @@
+Config.hs
+*~
+*.log
+cabal-dev/
+dist/
