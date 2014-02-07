@@ -28,47 +28,47 @@ PostgreSQL.
 To use this, you need to create a table amazon_email_queue with the
 following colums:
 
-id serial PRIMARY KEY,
-to_addr text NOT NULL,
-to_name text,
-from_addr text NOT NULL,
-from_name text NOT NULL,
-subject text NOT NULL,
-body text NOT NULL,
-date timestamptz NOT NULL DEFAULT now(),
-sent_at timestamptz,
-failed_count integer NOT NULL DEFAULT 0,
-html boolean NOT NULL DEFAULT false
-processing boolean NOT NULL DEFAULT false
+    id serial PRIMARY KEY,
+    to_addr text NOT NULL,
+    to_name text,
+    from_addr text NOT NULL,
+    from_name text NOT NULL,
+    subject text NOT NULL,
+    body text NOT NULL,
+    date timestamptz NOT NULL DEFAULT now(),
+    sent_at timestamptz,
+    failed_count integer NOT NULL DEFAULT 0,
+    html boolean NOT NULL DEFAULT false
+    processing boolean NOT NULL DEFAULT false
 
 And you should put an index on sent_at, date, failed_count, and processing (used to filter the messages).
 
 Then you should create a Config.hs file, that looks like:
 
-        {-# LANGUAGE OverloadedStrings #-}
-    
+    {-# LANGUAGE OverloadedStrings #-}
+
     module Config where
-    
+
     import Data.ByteString (ByteString)
-    
+
     configHost :: String
     configHost = "host for postgresql"
-    
+
     configUser :: String
     configUser = "user for postgresql"
-    
+
     configPass :: String
     configPass = "password for postgresql"
-    
+
     configDB :: String
     configDB = "database name"
-    
+
     configAccessKey :: ByteString
     configAccessKey = "AWS access key"
-    
+
     configSecretKey :: ByteString
     configSecretKey = "AWS secret key"
-    
+
     configLimit :: Int
     configLimit = 5 -- or higher, if you have a higher rate limit
 
