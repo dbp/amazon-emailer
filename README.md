@@ -38,10 +38,10 @@ following colums:
     date timestamptz NOT NULL DEFAULT now(),
     sent_at timestamptz,
     failed_count integer NOT NULL DEFAULT 0,
-    html boolean NOT NULL DEFAULT false
+    html boolean NOT NULL DEFAULT false,
     processing boolean NOT NULL DEFAULT false
 
-And you should put an index on sent_at, date, failed_count, and processing (used to filter the messages).
+And you should put an index on sent_at, date, failed_count, and processing (used to filter the messages). A file `create.sql` is provided that does this.
 
 Then you should create a Config.hs file, that looks like:
 
