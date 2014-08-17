@@ -43,34 +43,50 @@ following colums:
 
 And you should put an index on sent_at, date, failed_count, and processing (used to filter the messages). A file `create.sql` is provided that does this.
 
-Then you should create a Config.hs file, that looks like:
+Then you should create a config file, which uses the configurator package, and should look like:
 
-    {-# LANGUAGE OverloadedStrings #-}
+    host = "host for postgresql"
 
-    module Config where
+    port = 5433
 
-    import Data.ByteString (ByteString)
+    user = "user for postgresql"
 
-    configHost :: String
-    configHost = "host for postgresql"
+    pass = "password for postgresql"
 
-    configUser :: String
-    configUser = "user for postgresql"
+    db = "database name"
 
-    configPass :: String
-    configPass = "password for postgresql"
+    ses-access-key = "AWS access key"
 
-    configDB :: String
-    configDB = "database name"
+    ses-secret-key = "AWS secret key"
 
-    configAccessKey :: ByteString
-    configAccessKey = "AWS access key"
+    limit = 5 -- or higher, if you have a higher rate limit
 
-    configSecretKey :: ByteString
-    configSecretKey = "AWS secret key"
-
-    configLimit :: Int
-    configLimit = 5 -- or higher, if you have a higher rate limit
+To start the mailer, pass it the path to this config file. (Note: configurator supports including other config files, and I chose the config names to overlap with the similar config file for the postgres snaplet, if you're using snap. In that case `import "path/to/prod.cfg"` will get you all the postgres settings).
 
 Finally, in your application, just insert messages into the
-amazon_email_queue table, and then should get picked up and sent out.
+`amazon_email_queue` table, and then should get picked up and sent out.
+
+
+# Queue Cleaner
+
+If you send a bunch of emails, eventually the queue will slow down,
+because even with indexes the operation to get a message from the
+queue slows down (if someone who knows postgres better than me knows a
+different sort of index that doesn't have this property, let me
+know!). Because of this, it makes sense to move messages out of the
+queue periodically. The included amazon-email-queue-cleaner executable
+moves messages into an `amazon_email_archive` table which should have a schema
+with a subset of the columns in the queue table, and the columns defined in
+a comma separated list in the config file. It will copy those columns out.
+
+    columns = "to_addr, to_name, from_addr, from_name, subject"
+
+It is organized like this because it is often convenient to add
+additional application specific data to the email rows, and that data
+should be able to be copied to the archive. Further, there is
+information that isn't really important (like processing,
+failed_count) in the archive that is needed for the queue.
+
+It should be run with the same parameters as the `amazon-emailer`
+executable, and will move, every minute, all sent messages to the
+archive table.

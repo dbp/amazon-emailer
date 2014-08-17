@@ -1,5 +1,5 @@
 name:                amazon-emailer
-version:             0.3.0.1
+version:             0.4.0.0
 synopsis:            A queue daemon for Amazon's SES with a PostgreSQL table as a queue.
 description:         This application checks every second for messages in a queue table,
                      if there exist some that haven't been sent, it grabs
@@ -20,12 +20,22 @@ executable amazon-emailer
   -- other-modules:
   Build-depends:
         base == 4.*,
-        resourcet == 0.4.*,
+        resourcet == 1.*,
         lifted-base == 0.2.*,
         text == 0.11.*,
         bytestring >= 0.9.1 && < 0.11,
         postgresql-simple == 0.3.*,
-        http-conduit == 2.*,
+        http-conduit == 2.1.*,
         mime-mail == 0.4.*,
         mime-mail-ses == 0.2.*,
-        time >= 1.1 && < 1.5
+        time >= 1.1 && < 1.5,
+        configurator == 0.2.*
+
+executable amazon-emailer-queue-cleaner
+  main-is: Cleaner.hs
+  -- other-modules:
+  Build-depends:
+        base == 4.*,
+        lifted-base == 0.2.*,
+        postgresql-simple == 0.3.*,
+        configurator == 0.2.*
